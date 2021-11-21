@@ -41,6 +41,8 @@ jobs:
         git clone -b master https://github.com/Hyy2001X/AutoBuild-Packages.git autoupdate
         echo "下载 autoupdatesh"
         git clone -b master https://github.com/Hyy2001X/Openwrt-AutoUpdate.git autoupdatesh
+        echo "下载 unblockneteasemusic"
+        git clone -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic unblockneteasemusic
         echo "下载 self"
         git clone -b main https://github.com/${{github.repository}}.git openwrt
         echo "整理 项目"
@@ -63,6 +65,8 @@ jobs:
         mv -f ./autoupdate/luci-app-autoupdate ./openwrt/luci/
         mkdir -p ./openwrt/luci/luci-app-autoupdate/root/bin
         mv -f ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/luci-app-autoupdate/root/bin/AutoUpdate.sh
+        mkdir -p ./openwrt/luci/luci-app-unblockneteasemusic
+        mv -f ./unblockneteasemusic/* ./openwrt/luci/luci-app-unblockneteasemusic
     - name: 上传仓库
       run: |
         echo "上传我的仓库"
