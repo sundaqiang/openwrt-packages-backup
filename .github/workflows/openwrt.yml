@@ -52,14 +52,14 @@ jobs:
         rm -rf ./openwrt/packages
         mkdir -p ./openwrt/luci
         mkdir -p ./openwrt/packages
-        mv -rf ./passwall/luci-app-passwall ./openwrt/luci
-        mv -rf ./passwall/* ./openwrt/packages
-        mv -rf ./sundaqiang/r8168 ./openwrt/packages
-        mv -rf ./sundaqiang/* ./openwrt/luci
-        mv -rf ./dockerman/applications/luci-app-dockerman ./openwrt/luci
-        mv -rf ./rebootschedule/* ./openwrt/luci/rebootschedule
-        mv -rf ./autoupdate/luci-app-autoupdate ./openwrt/luci
-        mv -rf ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/luci-app-autoupdate/root/bin/AutoUpdate.sh
+        mv -f ./passwall/luci-app-passwall ./openwrt/luci/
+        mv -f ./passwall/* ./openwrt/packages/
+        mv -f ./sundaqiang/r8168 ./openwrt/packages/
+        mv -f ./sundaqiang/* ./openwrt/luci/
+        mv -f ./dockerman/applications/luci-app-dockerman ./openwrt/luci/
+        mv -f ./rebootschedule ./openwrt/luci/
+        mv -f ./autoupdate/luci-app-autoupdate ./openwrt/luci/
+        mv -f ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/luci-app-autoupdate/root/bin/AutoUpdate.sh
     - name: 上传仓库
       run: |
         echo "上传我的仓库"
