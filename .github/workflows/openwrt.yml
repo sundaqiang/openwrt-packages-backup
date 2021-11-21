@@ -68,5 +68,5 @@ jobs:
         git add .
         git commit -m "Sync OpenwrtPackagesBackup on $(date +%Y-%m-%d-%H-%M-%S)"
         echo "开始上传${{github.repository}}!"
-        git push --quiet "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}" HEAD:main
+        git push --quiet "https://${{ secrets.REPO_TOKEN }}@github.com/${{github.repository}}" HEAD:main
         echo "同步完成!"
