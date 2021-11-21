@@ -61,15 +61,12 @@ jobs:
         mkdir -p ./openwrt/luci/luci-app-autoupdate/root/bin
         mv -f ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/luci-app-autoupdate/root/bin/AutoUpdate.sh
     - name: 上传仓库
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "上传我的仓库"
         cd $GITHUB_WORKSPACE
         cd openwrt
         git add .
-        git commit -m "Sync qinglong/build-actions on $(date +%Y-%m-%d-%H-%M-%S)"
+        git commit -m "Sync OpenwrtPackagesBackup on $(date +%Y-%m-%d-%H-%M-%S)"
         echo "开始上传${{github.repository}}!"
-        echo $GITHUB_TOKEN
-        git push --quiet "https://$GITHUB_TOKEN@github.com/${{github.repository}}" HEAD:main
+        git push --quiet "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}" HEAD:main
         echo "同步完成!"
