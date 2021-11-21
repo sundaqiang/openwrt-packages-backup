@@ -56,7 +56,8 @@ jobs:
         mv -f ./sundaqiang/r8168 ./openwrt/packages/
         mv -f ./sundaqiang/* ./openwrt/luci/
         mv -f ./dockerman/applications/luci-app-dockerman ./openwrt/luci/
-        mv -f ./rebootschedule ./openwrt/luci/
+        mkdir -p ./openwrt/luci/luci-app-rebootschedule
+        mv -f ./rebootschedule/* ./openwrt/luci/luci-app-rebootschedule
         mv -f ./autoupdate/luci-app-autoupdate ./openwrt/luci/
         mkdir -p ./openwrt/luci/luci-app-autoupdate/root/bin
         mv -f ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/luci-app-autoupdate/root/bin/AutoUpdate.sh
