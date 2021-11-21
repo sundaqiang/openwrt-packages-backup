@@ -26,7 +26,6 @@ jobs:
         git config --global user.name "github-actions[bot]"
           
     - name: 整理文件
-      if: env.REPO_TOKEN
       run: |
         cd $GITHUB_WORKSPACE
         echo "下载 passwall"
@@ -62,7 +61,6 @@ jobs:
         mv -rf ./autoupdate/luci-app-autoupdate ./openwrt/luci
         mv -rf ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/luci-app-autoupdate/root/bin/AutoUpdate.sh
     - name: 上传仓库
-      if: env.REPO_TOKEN
       run: |
         echo "上传我的仓库"
         cd $GITHUB_WORKSPACE
@@ -70,5 +68,5 @@ jobs:
         git add .
         git commit -m "Sync qinglong/build-actions on $(date +%Y-%m-%d-%H-%M-%S)"
         echo "开始上传${{github.repository}}!"
-        git push --quiet "https://${{ secrets.REPO_TOKEN }}@github.com/${{github.repository}}" HEAD:main
+        git push --quiet "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{github.repository}}" HEAD:main
         echo "同步完成!"
