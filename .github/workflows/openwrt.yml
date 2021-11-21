@@ -59,6 +59,7 @@ jobs:
         mv -f ./dockerman/applications/luci-app-dockerman ./openwrt/luci/
         mv -f ./rebootschedule ./openwrt/luci/
         mv -f ./autoupdate/luci-app-autoupdate ./openwrt/luci/
+        mkdir -p ./openwrt/luci/luci-app-autoupdate/root/bin
         mv -f ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/luci-app-autoupdate/root/bin/AutoUpdate.sh
     - name: 上传仓库
       run: |
