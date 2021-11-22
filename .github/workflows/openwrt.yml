@@ -42,7 +42,9 @@ jobs:
         echo "下载 autoupdatesh"
         git clone -b master https://github.com/Hyy2001X/Openwrt-AutoUpdate.git autoupdatesh
         echo "下载 unblockneteasemusic"
-        git clone -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic unblockneteasemusic
+        git clone -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git unblockneteasemusic
+        echo "下载 argon"
+        git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git argon
         echo "下载 self"
         git clone -b main https://github.com/${{github.repository}}.git openwrt
         echo "整理 项目"
@@ -51,6 +53,8 @@ jobs:
         rm -rf ./dockerman/.github
         rm -rf ./rebootschedule/.github
         rm -rf ./autoupdate/.github
+        rm -rf ./unblockneteasemusic/.github
+        rm -rf ./argon/.github
         rm -rf ./openwrt/luci
         rm -rf ./openwrt/packages
         mkdir -p ./openwrt/luci
@@ -67,6 +71,8 @@ jobs:
         mv -f ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/luci-app-autoupdate/root/bin/AutoUpdate.sh
         mkdir -p ./openwrt/luci/luci-app-unblockneteasemusic
         mv -f ./unblockneteasemusic/* ./openwrt/luci/luci-app-unblockneteasemusic
+        mkdir -p ./openwrt/luci/luci-theme-argon
+        mv -f ./argon/* ./openwrt/luci/luci-theme-argon
     - name: 上传仓库
       run: |
         echo "上传我的仓库"
