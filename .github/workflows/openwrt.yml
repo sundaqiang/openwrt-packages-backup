@@ -74,8 +74,8 @@ jobs:
         mv -f ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/applications/luci-app-autoupdate/root/bin/AutoUpdate.sh
         mkdir -p ./openwrt/luci/applications/luci-app-unblockneteasemusic
         mv -f ./unblockneteasemusic/* ./openwrt/luci/applications/luci-app-unblockneteasemusic/
-        mkdir -p ./openwrt/luci/luci-theme-argon
-        mv -f ./argon/* ./openwrt/luci/themes/luci-theme-argon
+        mkdir -p ./openwrt/luci/themes/luci-theme-argon
+        mv -f ./argon/* ./openwrt/luci/themes/luci-theme-argon/
     - name: 上传仓库
       run: |
         echo "上传我的仓库"
