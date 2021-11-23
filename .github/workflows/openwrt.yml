@@ -67,6 +67,8 @@ jobs:
         mkdir -p ./openwrt/luci/applications/luci-app-rebootschedule
         mv -f ./rebootschedule/* ./openwrt/luci/applications/luci-app-rebootschedule/
         chmod 755 ./openwrt/luci/applications/luci-app-rebootschedule/root/etc/init.d/rebootschedule
+        sed -i "/firstchild/d" ./openwrt/luci/applications/luci-app-rebootschedule/luasrc/controller/rebootschedule.lua
+        sed -i "s/control/services/g; s/Timing setting/计划任务/g" ./openwrt/luci/applications/luci-app-rebootschedule/luasrc/controller/rebootschedule.lua
         mv -f ./autoupdate/luci-app-autoupdate ./openwrt/luci/applications/
         mkdir -p ./openwrt/luci/applications/luci-app-autoupdate/root/bin
         mv -f ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/applications/luci-app-autoupdate/root/bin/AutoUpdate.sh
