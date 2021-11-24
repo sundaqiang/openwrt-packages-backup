@@ -1,4 +1,4 @@
-module("luci.servicesler.rebootschedule", package.seeall)
+module("luci.controller.rebootschedule", package.seeall)
 function index()
 	if not nixio.fs.access("/etc/config/rebootschedule") then
 		return
