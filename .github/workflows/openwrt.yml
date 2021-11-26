@@ -37,10 +37,6 @@ jobs:
         git clone -b master https://github.com/lisaac/luci-app-dockerman.git dockerman
         echo "下载 rebootschedule"
         git clone -b main https://github.com/DevOpenWRT-Router/luci-app-rebootschedule.git rebootschedule
-        echo "下载 autoupdate"
-        git clone -b master https://github.com/Hyy2001X/AutoBuild-Packages.git autoupdate
-        echo "下载 autoupdatesh"
-        git clone -b master https://github.com/Hyy2001X/Openwrt-AutoUpdate.git autoupdatesh
         echo "下载 unblockneteasemusic"
         git clone -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git unblockneteasemusic
         echo "下载 self"
@@ -50,14 +46,11 @@ jobs:
         rm -rf ./sundaqiang/.github
         rm -rf ./dockerman/.github
         rm -rf ./rebootschedule/.github
-        rm -rf ./autoupdate/.github
         rm -rf ./unblockneteasemusic/.github
-        rm -rf ./argon/.github
         rm -rf ./openwrt/luci
         rm -rf ./openwrt/packages
         mkdir -p ./openwrt/luci
         mkdir -p ./openwrt/luci/applications
-        mkdir -p ./openwrt/luci/themes
         mkdir -p ./openwrt/packages
         mv -f ./passwall/luci-app-passwall ./openwrt/luci/applications/
         mv -f ./passwall/* ./openwrt/packages/
@@ -69,9 +62,6 @@ jobs:
         chmod 755 ./openwrt/luci/applications/luci-app-rebootschedule/root/etc/init.d/rebootschedule
         sed -i "/firstchild/d" ./openwrt/luci/applications/luci-app-rebootschedule/luasrc/controller/rebootschedule.lua
         sed -i "s/\"control\"/\"services\"/g; s/Timing setting/计划任务/g" ./openwrt/luci/applications/luci-app-rebootschedule/luasrc/controller/rebootschedule.lua
-        mv -f ./autoupdate/luci-app-autoupdate ./openwrt/luci/applications/
-        mkdir -p ./openwrt/luci/applications/luci-app-autoupdate/root/bin
-        mv -f ./autoupdatesh/AutoUpdate.sh ./openwrt/luci/applications/luci-app-autoupdate/root/bin/AutoUpdate.sh
         mkdir -p ./openwrt/luci/applications/luci-app-unblockneteasemusic
         mv -f ./unblockneteasemusic/* ./openwrt/luci/applications/luci-app-unblockneteasemusic/
     - name: 上传仓库
