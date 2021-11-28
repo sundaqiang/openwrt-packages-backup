@@ -4,7 +4,7 @@ function index()
 		return
 	end
 	
-	entry({"admin", "services", "rebootschedule"}, cbi("rebootschedule"), "计划任务", 20).dependent = true
+	entry({"admin", "services", "rebootschedule"}, cbi("rebootschedule"), "定时任务", 20).dependent = true
 end
 
 
