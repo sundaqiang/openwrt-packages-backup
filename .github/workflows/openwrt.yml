@@ -44,6 +44,7 @@ jobs:
         echo "整理 项目"
         rm -rf ./passwall/.github
         rm -rf ./sundaqiang/.github
+        rm -rf ./sundaqiang/img
         rm -rf ./dockerman/.github
         rm -rf ./rebootschedule/.github
         rm -rf ./unblockneteasemusic/.github
