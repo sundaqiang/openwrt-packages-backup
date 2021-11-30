@@ -47,6 +47,7 @@ jobs:
         rm -rf ./passwall/.github
         rm -rf ./sundaqiang/.github
         rm -rf ./sundaqiang/img
+        rm -rf ./sundaqiang/README.md
         rm -rf ./dockerman/.github
         rm -rf ./rebootschedule/.github
         rm -rf ./unblockneteasemusic/.github
