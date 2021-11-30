@@ -33,6 +33,8 @@ jobs:
         git clone -b main https://github.com/xiaorouji/openwrt-passwall.git passwall
         echo "下载 sundaqiang"
         git clone -b master https://github.com/sundaqiang/openwrt-packages.git sundaqiang
+        echo "下载 r8168"
+        git clone -b master https://github.com/BROBIRD/openwrt-r8168 r8168
         echo "下载 dockerman"
         git clone -b master https://github.com/lisaac/luci-app-dockerman.git dockerman
         echo "下载 rebootschedule"
@@ -55,7 +57,7 @@ jobs:
         mkdir -p ./openwrt/packages
         mv -f ./passwall/luci-app-passwall ./openwrt/luci/applications/
         mv -f ./passwall/* ./openwrt/packages/
-        mv -f ./sundaqiang/r8168 ./openwrt/packages/
+        mv -f ./r8168 ./openwrt/packages/
         mv -f ./sundaqiang/* ./openwrt/luci/applications/
         mv -f ./dockerman/applications/luci-app-dockerman ./openwrt/luci/applications/
         mkdir -p ./openwrt/luci/applications/luci-app-rebootschedule
