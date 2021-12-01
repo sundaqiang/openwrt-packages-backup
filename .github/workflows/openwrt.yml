@@ -36,7 +36,7 @@ jobs:
         echo "下载 r8168"
         git clone -b master https://github.com/BROBIRD/openwrt-r8168 r8168
         echo "下载 dockerman"
-        git clone -b master https://github.com/lisaac/luci-app-dockerman.git dockerman
+        #git clone -b master https://github.com/lisaac/luci-app-dockerman.git dockerman
         echo "下载 rebootschedule"
         git clone -b main https://github.com/DevOpenWRT-Router/luci-app-rebootschedule.git rebootschedule
         echo "下载 unblockneteasemusic"
@@ -48,7 +48,7 @@ jobs:
         rm -rf ./sundaqiang/.github
         rm -rf ./sundaqiang/img
         rm -rf ./sundaqiang/README.md
-        rm -rf ./dockerman/.github
+        #rm -rf ./dockerman/.github
         rm -rf ./rebootschedule/.github
         rm -rf ./unblockneteasemusic/.github
         rm -rf ./openwrt/luci
@@ -60,7 +60,7 @@ jobs:
         mv -f ./passwall/* ./openwrt/packages/
         mv -f ./r8168 ./openwrt/packages/
         mv -f ./sundaqiang/* ./openwrt/luci/applications/
-        mv -f ./dockerman/applications/luci-app-dockerman ./openwrt/luci/applications/
+        #mv -f ./dockerman/applications/luci-app-dockerman ./openwrt/luci/applications/
         mkdir -p ./openwrt/luci/applications/luci-app-rebootschedule
         mv -f ./rebootschedule/* ./openwrt/luci/applications/luci-app-rebootschedule/
         chmod 755 ./openwrt/luci/applications/luci-app-rebootschedule/root/etc/init.d/rebootschedule
