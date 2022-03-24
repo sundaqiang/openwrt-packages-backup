@@ -32,7 +32,7 @@ jobs:
         echo "下载 passwall"
         git clone -b packages https://github.com/xiaorouji/openwrt-passwall.git passwall
         echo "下载 passwall2"
-        git clone -b main https://github.com/xiaorouji/openwrt-passwall2.git passwall
+        git clone -b main https://github.com/xiaorouji/openwrt-passwall2.git passwall2
         echo "下载 sundaqiang"
         git clone -b master https://github.com/sundaqiang/openwrt-packages.git sundaqiang
         echo "下载 r8168"
