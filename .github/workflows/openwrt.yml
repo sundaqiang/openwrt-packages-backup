@@ -31,6 +31,8 @@ jobs:
         cd $GITHUB_WORKSPACE
         echo "下载 passwall"
         git clone -b packages https://github.com/xiaorouji/openwrt-passwall.git passwall
+        echo "下载 passwall1"
+        git clone -b luci https://github.com/xiaorouji/openwrt-passwall.git passwall1
         echo "下载 passwall2"
         git clone -b main https://github.com/xiaorouji/openwrt-passwall2.git passwall2
         echo "下载 sundaqiang"
@@ -59,7 +61,8 @@ jobs:
         mkdir -p ./openwrt/luci
         mkdir -p ./openwrt/luci/applications
         mkdir -p ./openwrt/packages
-        mv -f ./passwall2/luci-app-passwall2 ./openwrt/luci/applications/luci-app-passwall
+        mv -f ./passwall1/luci-app-passwall ./openwrt/luci/applications/luci-app-passwall
+        mv -f ./passwall2/luci-app-passwall2 ./openwrt/luci/applications/luci-app-passwall2
         mv -f ./passwall/* ./openwrt/packages/
         mv -f ./r8168 ./openwrt/packages/
         mv -f ./sundaqiang/* ./openwrt/luci/applications/
