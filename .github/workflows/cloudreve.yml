@@ -18,7 +18,11 @@ jobs:
           image: cloudreve/cloudreve:latest
           path: /cloudreve/cloudreve
       - name: strip
-        run: strip ${{ steps.extract.outputs.destination }}/cloudreve
+        run: |
+          sudo apt-get update
+          sudo apt-get -y jq
+          strip ${{ steps.extract.outputs.destination }}/cloudreve
+          curl -s https://hub.docker.com/v2/repositories/cloudreve/cloudreve/tags/?page_size=2&page=1 | jq '.results[1].name'
       - name: Upload Dist
         uses: actions/upload-artifact@v2
         with:
