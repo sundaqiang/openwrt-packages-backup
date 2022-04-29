@@ -48,6 +48,7 @@ jobs:
         name: ${{ steps.getRelease.outputs.ReleaseVer }}
         
     - name: Delete workflow runs
+      if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true'
       uses: GitRML/delete-workflow-runs@main
       with:
         retain_days: 7
