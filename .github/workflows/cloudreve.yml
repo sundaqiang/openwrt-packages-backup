@@ -11,21 +11,42 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: shrink/actions-docker-extract@v1
-        id: extract
-        with:
-          image: cloudreve/cloudreve:latest
-          path: /cloudreve/cloudreve
-      - name: strip
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install jq
-          strip ${{ steps.extract.outputs.destination }}/cloudreve
-          RESULT=$(curl -k -s https://hub.docker.com/v2/repositories/cloudreve/cloudreve/tags/?page_size=2)
-          echo "USER=$(echo ${RESULT} | jq  '.results[1].name')" >> $GITHUB_ENV
-      - name: Upload Dist
-        uses: actions/upload-artifact@v2
-        with:
-          path: ${{ steps.extract.outputs.destination }}
-          name: ${{ env.USER }}
+    - name: Get Release Ver
+      id: getRelease
+      run: |
+        RESULT=$(curl -k -s https://hub.docker.com/v2/repositories/cloudreve/cloudreve/tags/?page_size=2)
+        VER=$(echo ${RESULT} | jq  '.results[1].name' | sed 's/\"//g')
+        echo "::set-output name=ReleaseVer::$VER"
+    
+    - name: Compare Release Ver
+      id: cacheVer
+      uses: actions/cache@v2
+      with:
+        path: .ReleaseVer
+        key: HEAD-${{ steps.getRelease.outputs.ReleaseVer }}
+
+    - name: Save New Release Ver
+      if: steps.cacheVer.outputs.cache-hit != 'true'
+      run: |
+        echo ${{ steps.getRelease.outputs.ReleaseVer }} | tee .ReleaseVer
+    
+    - name: Upload Dist
+      if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true'
+      uses: shrink/actions-docker-extract@v1
+      id: extract
+      with:
+        image: cloudreve/cloudreve:latest
+        path: /cloudreve/cloudreve
+        
+    - name: Upload Dist
+      if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true'
+      uses: actions/upload-artifact@v2
+      with:
+        path: ${{ steps.extract.outputs.destination }}
+        name: ${{ steps.getRelease.outputs.ReleaseVer }}
+        
+    - name: Delete workflow runs
+      uses: GitRML/delete-workflow-runs@main
+      with:
+        retain_days: 7
+        keep_minimum_runs: 7
