@@ -1,6 +1,11 @@
 name: 提取alpine版cloudreve
 on:
   workflow_dispatch:
+    inputs:
+      update:
+        description: 'Forced Updating'
+        required: false
+        default: 'false'
   schedule:
    - cron: 0 0 */1 * *
 
@@ -30,7 +35,7 @@ jobs:
       run: |
         echo ${{ steps.getRelease.outputs.ReleaseVer }} | tee .ReleaseVer
     
-    - name: Upload Dist
+    - name: extract docker
       if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true'
       uses: shrink/actions-docker-extract@v1
       id: extract
