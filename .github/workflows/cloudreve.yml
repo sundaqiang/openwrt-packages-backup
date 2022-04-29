@@ -22,9 +22,10 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install jq
           strip ${{ steps.extract.outputs.destination }}/cloudreve
-          curl -s https://hub.docker.com/v2/repositories/cloudreve/cloudreve/tags/?page_size=2&page=1 | jq '.results[1].name'
+          RESULT=$(curl -k -s https://hub.docker.com/v2/repositories/cloudreve/cloudreve/tags/?page_size=2)
+          USER=$(echo ${RESULT} | jq  '.results[1].name')
       - name: Upload Dist
         uses: actions/upload-artifact@v2
         with:
           path: ${{ steps.extract.outputs.destination }}
-          name: dist
+          name: $USER
