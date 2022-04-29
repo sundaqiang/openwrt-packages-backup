@@ -1,0 +1,26 @@
+name: 备份软件包
+on:
+  workflow_dispatch:
+  schedule:
+   - cron: 0 0 */1 * *
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shrink/actions-docker-extract@v1
+        id: extract
+        with:
+          image: cloudreve/cloudreve:latest
+          path: /cloudreve/cloudreve
+      - name: strip
+        run: strip ${{ steps.extract.outputs.destination }}
+      - name: Upload Dist
+        uses: actions/upload-artifact@v2
+        with:
+          path: ${{ steps.extract.outputs.destination }}
+          name: dist
