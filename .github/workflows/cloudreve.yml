@@ -18,7 +18,7 @@ jobs:
           image: cloudreve/cloudreve:latest
           path: /cloudreve/cloudreve
       - name: strip
-        run: echo ${{ steps.extract.outputs.destination }}
+        run: strip ${{ steps.extract.outputs.destination }}/cloudreve
       - name: Upload Dist
         uses: actions/upload-artifact@v2
         with:
