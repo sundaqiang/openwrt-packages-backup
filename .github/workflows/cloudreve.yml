@@ -1,4 +1,4 @@
-name: 备份软件包
+name: 提取alpine版cloudreve
 on:
   workflow_dispatch:
   schedule:
@@ -18,7 +18,7 @@ jobs:
           image: cloudreve/cloudreve:latest
           path: /cloudreve/cloudreve
       - name: strip
-        run: strip ${{ steps.extract.outputs.destination }}
+        run: echo ${{ steps.extract.outputs.destination }}
       - name: Upload Dist
         uses: actions/upload-artifact@v2
         with:
