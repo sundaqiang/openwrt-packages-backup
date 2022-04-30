@@ -40,6 +40,10 @@ jobs:
         image: cloudreve/cloudreve:latest
         path: /cloudreve/cloudreve
         
+    - name: strip Cloudreve
+      if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true'
+      run: strip ${{ steps.extract.outputs.destination }}/cloudreve
+      
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
       if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true' && !cancelled()
