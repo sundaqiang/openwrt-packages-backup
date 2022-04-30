@@ -2,7 +2,7 @@ name: 备份软件包
 on:
   workflow_dispatch:
   schedule:
-   - cron: 0 0 */3 * *
+   - cron: 0 0 */1 * *
 
 env:
   TZ: Asia/Shanghai
@@ -84,3 +84,9 @@ jobs:
         echo "开始上传${{github.repository}}!"
         git push --quiet "https://${{ secrets.REPO_TOKEN }}@github.com/${{github.repository}}" HEAD:main
         echo "同步完成!"
+
+    - name: Delete workflow runs
+      uses: GitRML/delete-workflow-runs@main
+      with:
+        retain_days: 7
+        keep_minimum_runs: 7
