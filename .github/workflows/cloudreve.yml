@@ -7,7 +7,7 @@ on:
         required: false
         default: 'false'
   schedule:
-   - cron: 0 0 */3 * *
+   - cron: 0 0 */1 * *
 
 jobs:
   build:
@@ -40,21 +40,14 @@ jobs:
         image: cloudreve/cloudreve:latest
         path: /cloudreve/cloudreve
         
-    #- name: Upload Dist
-      #if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true'
-      #uses: actions/upload-artifact@v2
-      #with:
-        #path: ${{ steps.extract.outputs.destination }}
-        #name: ${{ steps.getRelease.outputs.ReleaseVer }}
-        
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
       if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: Cloudreve-${{ steps.getRelease.outputs.ReleaseVer }}
-        files: ${{ steps.extract.outputs.destination }}
+        tag_name: Alpine-Cloudreve-${{ steps.getRelease.outputs.ReleaseVer }}
+        files: ${{ steps.extract.outputs.destination }}/*
         
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
@@ -64,7 +57,7 @@ jobs:
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
-      if: steps.tag.outputs.status == 'success' && !cancelled()
+      if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true' && !cancelled()
       with:
         keep_latest: 7
         delete_tags: true
