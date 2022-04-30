@@ -40,16 +40,33 @@ jobs:
         image: cloudreve/cloudreve:latest
         path: /cloudreve/cloudreve
         
-    - name: Upload Dist
-      if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true'
-      uses: actions/upload-artifact@v2
+    #- name: Upload Dist
+      #if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true'
+      #uses: actions/upload-artifact@v2
+      #with:
+        #path: ${{ steps.extract.outputs.destination }}
+        #name: ${{ steps.getRelease.outputs.ReleaseVer }}
+        
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        path: ${{ steps.extract.outputs.destination }}
-        name: ${{ steps.getRelease.outputs.ReleaseVer }}
+        tag_name: Cloudreve-${{ steps.getRelease.outputs.ReleaseVer }}
+        files: ${{ steps.extract.outputs.destination }}
         
     - name: Delete workflow runs
-      if: steps.cacheVer.outputs.cache-hit != 'true' || github.event.inputs.update == 'true'
       uses: GitRML/delete-workflow-runs@main
       with:
         retain_days: 7
         keep_minimum_runs: 7
+
+    - name: Remove old Releases
+      uses: dev-drprasad/delete-older-releases@v0.1.0
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      with:
+        keep_latest: 7
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
