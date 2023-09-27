@@ -3,6 +3,7 @@ local appname = api.appname
 local sys = api.sys
 
 m = Map(appname)
+api.set_apply_on_parse(m)
 
 local nodes_table = {}
 for k, e in ipairs(api.get_valid_nodes()) do
@@ -230,6 +231,14 @@ o.description = translate("Notify the DNS server when the DNS query is notified,
 o.datatype = "ipaddr"
 o:depends("remote_dns_protocol", "tcp")
 o:depends("remote_dns_protocol", "doh")
+
+o = s:option(ListValue, "remote_dns_detour", translate("Remote DNS Outbound"))
+o.default = "remote"
+o:value("remote", translate("Remote"))
+o:value("direct", translate("Direct"))
+o:depends("remote_dns_protocol", "tcp")
+o:depends("remote_dns_protocol", "doh")
+o:depends("remote_dns_protocol", "udp")
 
 o = s:option(Flag, "remote_fakedns", "FakeDNS", translate("Use FakeDNS work in the shunt domain that proxy."))
 o.default = "0"

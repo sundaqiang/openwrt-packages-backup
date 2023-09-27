@@ -521,10 +521,10 @@ function gen_config(var)
 	local local_http_password = var["-local_http_password"]
 	local dns_listen_port = var["-dns_listen_port"]
 	local dns_query_strategy = var["-dns_query_strategy"]
-	local direct_dns_port = var["-direct_dns_port"]
 	local direct_dns_udp_server = var["-direct_dns_udp_server"]
-	local remote_dns_port = var["-remote_dns_port"]
+	local direct_dns_udp_port = var["-direct_dns_udp_port"]
 	local remote_dns_udp_server = var["-remote_dns_udp_server"]
+	local remote_dns_udp_port = var["-remote_dns_udp_port"]
 	local remote_dns_fake = var["-remote_dns_fake"]
 	local remote_dns_fake_strategy = var["-remote_dns_fake_strategy"]
 	local dns_cache = var["-dns_cache"]
@@ -1034,56 +1034,54 @@ function gen_config(var)
 			end)
 		end
 	
-		if true then
-			if remote_dns_udp_server then
-				local _remote_dns = {
-					_flag = "remote",
-					address = remote_dns_udp_server,
-					port = tonumber(remote_dns_port) or 53
-				}
-				if not remote_dns_fake then
-					_remote_dns.domains = #dns_remote_domains > 0 and dns_remote_domains or nil
-					--_remote_dns.expectIPs = #dns_remote_expectIPs > 0 and dns_remote_expectIPs or nil
-				end
-				_remote_dns_proto = "udp"
-				table.insert(dns.servers, _remote_dns)
-	
-				table.insert(routing.rules, 1, {
-					type = "field",
-					ip = {
-						remote_dns_udp_server
-					},
-					port = tonumber(remote_dns_port) or 53,
-					network = "udp",
-					outboundTag = "direct"
-				})
+		if remote_dns_udp_server then
+			local _remote_dns = {
+				_flag = "remote",
+				address = remote_dns_udp_server,
+				port = tonumber(remote_dns_udp_port) or 53
+			}
+			if not remote_dns_fake then
+				_remote_dns.domains = #dns_remote_domains > 0 and dns_remote_domains or nil
+				--_remote_dns.expectIPs = #dns_remote_expectIPs > 0 and dns_remote_expectIPs or nil
 			end
-			if remote_dns_fake then
-				fakedns = {}
-				local fakedns4 = {
-					ipPool = "198.18.0.0/16",
-					poolSize = 65535
-				}
-				local fakedns6 = {
-					ipPool = "fc00::/18",
-					poolSize = 65535
-				}
-				if remote_dns_fake_strategy == "UseIP" then
-					table.insert(fakedns, fakedns4)
-					table.insert(fakedns, fakedns6)
-				elseif remote_dns_fake_strategy == "UseIPv4" then
-					table.insert(fakedns, fakedns4)
-				elseif remote_dns_fake_strategy == "UseIPv6" then
-					table.insert(fakedns, fakedns6)
-				end
-				local _remote_dns = {
-					_flag = "remote_fakedns",
-					address = "fakedns",
-					domains = #dns_remote_domains > 0 and dns_remote_domains or nil
-					--expectIPs = #dns_remote_expectIPs > 0 and dns_remote_expectIPs or nil
-				}
-				table.insert(dns.servers, _remote_dns)
+			_remote_dns_proto = "udp"
+			table.insert(dns.servers, _remote_dns)
+
+			table.insert(routing.rules, 1, {
+				type = "field",
+				ip = {
+					remote_dns_udp_server
+				},
+				port = tonumber(remote_dns_udp_port) or 53,
+				network = "udp",
+				outboundTag = "direct"
+			})
+		end
+		if remote_dns_fake then
+			fakedns = {}
+			local fakedns4 = {
+				ipPool = "198.18.0.0/16",
+				poolSize = 65535
+			}
+			local fakedns6 = {
+				ipPool = "fc00::/18",
+				poolSize = 65535
+			}
+			if remote_dns_fake_strategy == "UseIP" then
+				table.insert(fakedns, fakedns4)
+				table.insert(fakedns, fakedns6)
+			elseif remote_dns_fake_strategy == "UseIPv4" then
+				table.insert(fakedns, fakedns4)
+			elseif remote_dns_fake_strategy == "UseIPv6" then
+				table.insert(fakedns, fakedns6)
 			end
+			local _remote_dns = {
+				_flag = "remote_fakedns",
+				address = "fakedns",
+				domains = #dns_remote_domains > 0 and dns_remote_domains or nil
+				--expectIPs = #dns_remote_expectIPs > 0 and dns_remote_expectIPs or nil
+			}
+			table.insert(dns.servers, _remote_dns)
 		end
 	
 		if true then
@@ -1100,13 +1098,13 @@ function gen_config(var)
 	
 			if direct_dns_udp_server then
 				_direct_dns.address = direct_dns_udp_server
-				_direct_dns.port = tonumber(direct_dns_port) or 53
+				_direct_dns.port = tonumber(direct_dns_udp_port) or 53
 				table.insert(routing.rules, 1, {
 					type = "field",
 					ip = {
 						direct_dns_udp_server
 					},
-					port = tonumber(direct_dns_port) or 53,
+					port = tonumber(direct_dns_udp_port) or 53,
 					network = "udp",
 					outboundTag = "direct"
 				})
@@ -1130,8 +1128,9 @@ function gen_config(var)
 			local direct_type_dns = {
 				settings = {
 					address = direct_dns_udp_server,
-					port = tonumber(direct_dns_port) or 53,
-					network = "udp"
+					port = tonumber(direct_dns_udp_port) or 53,
+					network = "udp",
+					nonIPQuery = "skip"
 				},
 				proxySettings = {
 					tag = "direct"
@@ -1140,18 +1139,12 @@ function gen_config(var)
 			local remote_type_dns = {
 				settings = {
 					address = remote_dns_udp_server,
-					port = tonumber(remote_dns_port) or 53,
-					network = _remote_dns_proto or "tcp"
+					port = tonumber(remote_dns_udp_port) or 53,
+					network = _remote_dns_proto or "tcp",
+					nonIPQuery = "skip"
 				},
 				proxySettings = {
 					tag = "direct"
-				}
-			}
-			local custom_type_dns = {
-				settings = {
-					address = "1.1.1.1",
-					port = 53,
-					network = "tcp",
 				}
 			}
 			local type_dns = remote_type_dns
@@ -1400,28 +1393,31 @@ function gen_dns_config(var)
 	local dns_query_strategy = var["-dns_query_strategy"]
 	local dns_out_tag = var["-dns_out_tag"]
 	local dns_client_ip = var["-dns_client_ip"]
-	local direct_dns_server = var["-direct_dns_server"]
-	local direct_dns_port = var["-direct_dns_port"]
 	local direct_dns_udp_server = var["-direct_dns_udp_server"]
+	local direct_dns_udp_port = var["-direct_dns_udp_port"]
 	local direct_dns_tcp_server = var["-direct_dns_tcp_server"]
+	local direct_dns_tcp_port = var["-direct_dns_tcp_port"]
 	local direct_dns_doh_url = var["-direct_dns_doh_url"]
 	local direct_dns_doh_host = var["-direct_dns_doh_host"]
-	local remote_dns_server = var["-remote_dns_server"]
-	local remote_dns_port = var["-remote_dns_port"]
+	local direct_dns_doh_ip = var["-direct_dns_doh_ip"]
+	local direct_dns_doh_port = var["-direct_dns_doh_port"]
 	local remote_dns_udp_server = var["-remote_dns_udp_server"]
+	local remote_dns_udp_port = var["-remote_dns_udp_port"]
 	local remote_dns_tcp_server = var["-remote_dns_tcp_server"]
+	local remote_dns_tcp_port = var["-remote_dns_tcp_port"]
 	local remote_dns_doh_url = var["-remote_dns_doh_url"]
 	local remote_dns_doh_host = var["-remote_dns_doh_host"]
+	local remote_dns_doh_ip = var["-remote_dns_doh_ip"]
+	local remote_dns_doh_port = var["-remote_dns_doh_port"]
+	local remote_dns_detour = var["-remote_dns_detour"]
 	local remote_dns_outbound_socks_address = var["-remote_dns_outbound_socks_address"]
 	local remote_dns_outbound_socks_port = var["-remote_dns_outbound_socks_port"]
-	local remote_dns_fake = var["-remote_dns_fake"]
 	local dns_cache = var["-dns_cache"]
 	local loglevel = var["-loglevel"] or "warning"
 	
 	local inbounds = {}
 	local outbounds = {}
 	local dns = nil
-	local fakedns = nil
 	local routing = nil
 
 	if dns_listen_port then
@@ -1444,117 +1440,76 @@ function gen_dns_config(var)
 		local other_type_dns_proto, other_type_dns_server, other_type_dns_port
 	
 		if dns_out_tag == "remote" then
+			if remote_dns_detour == "direct" then
+				dns_out_tag = "direct"
+				table.insert(outbounds, 1, {
+					tag = dns_out_tag,
+					protocol = "freedom",
+					settings = {
+						domainStrategy = (dns_query_strategy and dns_query_strategy ~= "") and dns_query_strategy or "UseIPv4"
+					},
+					streamSettings = {
+						sockopt = {
+							mark = 255
+						}
+					}
+				})
+			else
+				if remote_dns_outbound_socks_address and remote_dns_outbound_socks_port then
+					table.insert(outbounds, 1, {
+						tag = dns_out_tag,
+						protocol = "socks",
+						streamSettings = {
+							network = "tcp",
+							security = "none"
+						},
+						settings = {
+							servers = {
+								{
+									address = remote_dns_outbound_socks_address,
+									port = tonumber(remote_dns_outbound_socks_port)
+								}
+							}
+						}
+					})
+				end
+			end
+
 			local _remote_dns = {
 				_flag = "remote"
 			}
-
-			if remote_dns_fake then
-				remote_dns_server = "1.1.1.1"
-				fakedns = {}
-				fakedns[#fakedns + 1] = {
-					ipPool = "198.18.0.0/16",
-					poolSize = 65535
-				}
-				if dns_query_strategy == "UseIP" then
-					fakedns[#fakedns + 1] = {
-						ipPool = "fc00::/18",
-						poolSize = 65535
-					}
-				end
-				_remote_dns.address = "fakedns"
-			end
-
-			other_type_dns_port = tonumber(remote_dns_port) or 53
-			other_type_dns_server = remote_dns_server
 	
 			if remote_dns_udp_server then
 				_remote_dns.address = remote_dns_udp_server
-				_remote_dns.port = tonumber(remote_dns_port) or 53
+				_remote_dns.port = tonumber(remote_dns_udp_port) or 53
+				
 				other_type_dns_proto = "udp"
+				other_type_dns_server = remote_dns_udp_server
+				other_type_dns_port = _remote_dns.port
 			end
 	
 			if remote_dns_tcp_server then
-				_remote_dns.address = remote_dns_tcp_server
-				_remote_dns.port = tonumber(remote_dns_port) or 53
+				_remote_dns.address = "tcp://" .. remote_dns_tcp_server
+				_remote_dns.port = tonumber(remote_dns_tcp_port) or 53
+				
 				other_type_dns_proto = "tcp"
+				other_type_dns_server = remote_dns_tcp_server
+				other_type_dns_port = _remote_dns.port
 			end
 	
 			if remote_dns_doh_url and remote_dns_doh_host then
-				if remote_dns_server and remote_dns_doh_host ~= remote_dns_server and not api.is_ip(remote_dns_doh_host) then
-					dns.hosts[remote_dns_doh_host] = remote_dns_server
+				if remote_dns_doh_ip and remote_dns_doh_host ~= remote_dns_doh_ip and not api.is_ip(remote_dns_doh_host) then
+					dns.hosts[remote_dns_doh_host] = remote_dns_doh_ip
 				end
 				_remote_dns.address = remote_dns_doh_url
-				_remote_dns.port = tonumber(remote_dns_port) or 443
-				other_type_dns_proto = "tcp"
-				other_type_dns_port = 53
+				_remote_dns.port = tonumber(remote_dns_doh_port) or 443
 			end
 	
 			table.insert(dns.servers, _remote_dns)
-			table.insert(outbounds, 1, {
-				tag = "remote",
-				protocol = "socks",
-				streamSettings = {
-					network = "tcp",
-					security = "none"
-				},
-				settings = {
-					servers = {
-						{
-							address = remote_dns_outbound_socks_address,
-							port = tonumber(remote_dns_outbound_socks_port)
-						}
-					}
-				}
-			})
 		elseif dns_out_tag == "direct" then
-			local _direct_dns = {
-				_flag = "direct"
-			}
-
-			other_type_dns_proto = tonumber(direct_dns_port) or 53
-			other_type_dns_server = direct_dns_server
-	
-			if direct_dns_udp_server then
-				_direct_dns.address = direct_dns_udp_server
-				_direct_dns.port = tonumber(direct_dns_port) or 53
-				table.insert(routing.rules, 1, {
-					type = "field",
-					ip = {
-						direct_dns_udp_server
-					},
-					port = tonumber(direct_dns_port) or 53,
-					network = "udp",
-					outboundTag = "direct"
-				})
-			end
-
-			if direct_dns_udp_server then
-				_direct_dns.address = direct_dns_udp_server
-				_direct_dns.port = tonumber(direct_dns_port) or 53
-				other_type_dns_proto = "udp"
-			end
-	
-			if direct_dns_tcp_server then
-				_direct_dns.address = direct_dns_tcp_server:gsub("tcp://", "tcp+local://")
-				_direct_dns.port = tonumber(direct_dns_port) or 53
-				other_type_dns_proto = "tcp"
-			end
-	
-			if direct_dns_doh_url and direct_dns_doh_host then
-				if direct_dns_server and direct_dns_doh_host ~= direct_dns_server and not api.is_ip(direct_dns_doh_host) then
-					dns.hosts[direct_dns_doh_host] = direct_dns_server
-				end
-				_direct_dns.address = direct_dns_doh_url:gsub("https://", "https+local://")
-				_direct_dns.port = tonumber(direct_dns_port) or 443
-				other_type_dns_proto = "tcp"
-				other_type_dns_port = 53
-			end
-	
-			table.insert(dns.servers, _direct_dns)
-	
 			table.insert(outbounds, 1, {
+				tag = dns_out_tag,
 				protocol = "freedom",
-				tag = "direct",
 				settings = {
 					domainStrategy = (dns_query_strategy and dns_query_strategy ~= "") and dns_query_strategy or "UseIPv4"
 				},
@@ -1564,6 +1519,47 @@ function gen_dns_config(var)
 					}
 				}
 			})
+
+			local _direct_dns = {
+				_flag = "direct"
+			}
+	
+			if direct_dns_udp_server then
+				_direct_dns.address = direct_dns_udp_server
+				_direct_dns.port = tonumber(direct_dns_udp_port) or 53
+				table.insert(routing.rules, 1, {
+					type = "field",
+					ip = {
+						direct_dns_udp_server
+					},
+					port = tonumber(direct_dns_udp_port) or 53,
+					network = "udp",
+					outboundTag = "direct"
+				})
+
+				other_type_dns_proto = "udp"
+				other_type_dns_server = direct_dns_udp_server
+				other_type_dns_port = _direct_dns.port
+			end
+	
+			if direct_dns_tcp_server then
+				_direct_dns.address = "tcp+local://" .. direct_dns_tcp_server
+				_direct_dns.port = tonumber(direct_dns_tcp_port) or 53
+				
+				other_type_dns_proto = "tcp"
+				other_type_dns_server = direct_dns_tcp_server
+				other_type_dns_port = _direct_dns.port
+			end
+	
+			if direct_dns_doh_url and direct_dns_doh_host then
+				if direct_dns_doh_ip and direct_dns_doh_host ~= direct_dns_doh_ip and not api.is_ip(direct_dns_doh_host) then
+					dns.hosts[direct_dns_doh_host] = direct_dns_doh_ip
+				end
+				_direct_dns.address = direct_dns_doh_url:gsub("https://", "https+local://")
+				_direct_dns.port = tonumber(direct_dns_doh_port) or 443
+			end
+	
+			table.insert(dns.servers, _direct_dns)
 		end
 	
 		local dns_hosts_len = 0
@@ -1597,6 +1593,7 @@ function gen_dns_config(var)
 				address = other_type_dns_server or "1.1.1.1",
 				port = other_type_dns_port or 53,
 				network = other_type_dns_proto or "tcp",
+				nonIPQuery = "skip"
 			}
 		})
 	
@@ -1625,7 +1622,6 @@ function gen_dns_config(var)
 			},
 			-- DNS
 			dns = dns,
-			fakedns = fakedns,
 			-- 传入连接
 			inbounds = inbounds,
 			-- 传出连接
