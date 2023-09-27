@@ -64,7 +64,7 @@ jobs:
         mv -f ./passwall1/luci-app-passwall ./openwrt/luci/applications/luci-app-passwall
         mv -f ./passwall2/luci-app-passwall2 ./openwrt/luci/applications/luci-app-passwall2
         mv -f ./passwall/* ./openwrt/packages/
-        mv -f ./r8168 ./openwrt/packages/
+        #mv -f ./r8168 ./openwrt/packages/
         mv -f ./sundaqiang/* ./openwrt/luci/applications/
         #mv -f ./dockerman/applications/luci-app-dockerman ./openwrt/luci/applications/
         mkdir -p ./openwrt/luci/applications/luci-app-rebootschedule
