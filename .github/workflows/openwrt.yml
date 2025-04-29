@@ -9,7 +9,7 @@ env:
 
 jobs:
   del_runs:
-    runs-on: Ubuntu-20.04
+    runs-on: Ubuntu-24.04
     name: 拉取最新源码
     
     steps:
