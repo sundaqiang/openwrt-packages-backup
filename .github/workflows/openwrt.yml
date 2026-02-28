@@ -1,8 +1,8 @@
 name: 备份软件包
 on:
   workflow_dispatch:
-  schedule:
-   - cron: 0 0 */1 * *
+#  schedule:
+#   - cron: 0 0 */1 * *
 
 env:
   TZ: Asia/Shanghai
